@@ -1,5 +1,6 @@
 from sklearn.datasets import make_classification
 import pandas as pd
+import numpy as np
 import argparse
 
 
@@ -17,15 +18,23 @@ def make_parser():
     return parser
 
 
-if __name__ == '__main__':
+def main():
     parser = make_parser()
     args = parser.parse_args()
     nvars = args.nvars_informative + args.nvars_redundant
     print('Generating dataset with {} samples, {} variables, and {} clusters ...'.format(
-        args.nsamples, args.nvars, args.nclusters))
+        args.nsamples, nvars, args.nclusters))
 
     X, y = make_classification(n_samples=args.nsamples, n_features=nvars,
                                n_informative=args.nvars_informative,
                                n_redundant=args.nvars_redundant,
                                n_repeated=0, n_classes=args.nclusters,
                                n_clusters_per_class=1)
+    tag = '{}_{}_{}_{}.txt'.format(
+        nvars, args.nvars_informative, args.nvars_redundant, args.nclusters)
+    np.savetxt('mkdata_' + tag, X)
+    np.savetxt('mklabels_' + tag, y)
+
+
+if __name__ == '__main__':
+    main()
